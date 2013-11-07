@@ -7,6 +7,8 @@ define(function (require) {
    */
 
   var AddTask = require('component/add_task');
+  var TaskData = require('component/task_data');
+  var TaskList = require('component/task_list');
 
   /**
    * Module exports
@@ -20,6 +22,8 @@ define(function (require) {
 
   function initialize() {
 	AddTask.attachTo('.js-add-task');
+	TaskData.attachTo('.js-task-data');
+	TaskList.attachTo('.js-task-list');
   }
 
 });
