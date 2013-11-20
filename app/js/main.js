@@ -9,6 +9,8 @@ requirejs.config({
   }
 });
 
+require('newrelic');
+
 require(
   [
     'flight/lib/compose',

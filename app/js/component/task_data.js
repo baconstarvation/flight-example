@@ -1,17 +1,26 @@
 define(function (require) {
 	var defineComponent = require('flight/lib/component');
+	var withStorage = require('component/with_storage');
 	
 	// return a constructor for this component
-	return defineComponent(taskData);
+	return defineComponent(taskData, withStorage);
 	
 	// component definition
 	function taskData () {
 		// component methods go here
+		
+		this.defaultAttrs({
+			taskStorageKey: 'tasks'
+		});
+		
 		this.handleAddTask = function(e, data) {
 			// generate ID and store on task object
-			data.task.id = Date.now();
+			data.task.id = _.uniqueId('task');
+			
 			// store task
 			this.tasks[data.task.id] = data.task;
+			
+			this.write(this.attr.taskStorageKey, this.tasks);
 			
 			// trigger event
 			this.trigger('dataTaskAdded', {
@@ -34,6 +43,8 @@ define(function (require) {
 				return this.tasks[key];
 			}, this);
 			
+			this.tasks = this.read(this.attr.taskStorageKey);
+			
 			// trigger data event
 			this.trigger('dataTasks', {
 				tasks: tasks
@@ -51,7 +62,7 @@ define(function (require) {
 		};
 		
 		this.after('initialize', function() {
-			this.tasks = {};
+			this.tasks = this.read(this.attr.taskStorageKey) || {};
 			this.on('uiAddTask', this.handleAddTask);
 			this.on('uiNeedsTask', this.handleNeedsTask);
 			this.on('uiNeedsTasks', this.handleNeedsTasks);
